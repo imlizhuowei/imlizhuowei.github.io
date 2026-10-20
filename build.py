@@ -4,8 +4,9 @@ import html, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def inline(s):
+def inline(s, where="main"):
     s = html.escape(s, quote=False)
+    s = re.sub(r"==(.+?)==", (r'<span class="hl">\1</span>' if where == "main" else r'<span class="em">\1</span>'), s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"\[(.+?)\]\((.+?)\)", r'<a href="\2">\1</a>', s)
     s = re.sub(r"\{(.+?)\}", r'<mark class="todo">\1</mark>', s)
@@ -83,6 +84,15 @@ h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;le
 .an{text-decoration:underline dotted;text-decoration-color:rgba(61,91,120,.55);text-underline-offset:4px;text-decoration-thickness:1px;cursor:default;transition:background .2s}
 .an.hot{background:rgba(61,91,120,.08);border-radius:2px}
 .why{display:none}
+.hl{color:var(--ink);font-weight:500;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-bottom:3px;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'><path d='M0 3.6 C 14 2.2, 26 4.6, 40 3.2 S 66 2.0, 80 3.6 S 106 4.4, 120 2.8' fill='none' stroke='%233d5b78' stroke-opacity='.55' stroke-width='1.6' stroke-linecap='round'/></svg>") repeat-x left bottom/120px 6px}
+.hl .an{text-decoration:none}
+.em{color:var(--ink);font-weight:500}
+.mark{color:var(--ink);font-weight:500;padding:.05em .35em;margin-left:-.35em;border-radius:3px 6px 4px 7px;
+  background:linear-gradient(100deg,rgba(247,226,128,0) 0%,rgba(247,226,128,.78) 3%,rgba(247,226,128,.6) 50%,rgba(247,226,128,.75) 96%,rgba(247,226,128,0) 100%);
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+.go{margin-top:.7rem!important}
+.go a{font-weight:500;color:var(--blue);text-decoration-color:rgba(61,91,120,.5)}
 footer{margin-top:56px;font-size:.85rem;color:var(--faint);padding-left:140px}
 @media (max-width:760px){
   body{font-size:17px}
@@ -138,6 +148,8 @@ def build():
     for e in entries:
         ps, k = [], 0
         for p in e["main"]:
+            if p.startswith("-> "):
+                ps.append(f'<p class="go">{inline(p[3:])}</p>'); continue
             t, k = anchors(inline(p), k); ps.append(f"<p>{t}</p>")
         main = "".join(ps)
         notes = []
@@ -146,10 +158,12 @@ def build():
             if len(e["note"]) > 1 and ": " in nt:
                 l, _, nt = nt.partition(": "); lab = f'<span class="lab">{html.escape(l)}</span>'
             dn = f' data-n="{i}"' if i < k else ""
-            notes.append(f'<p class="note"{dn}>{lab}{inline(nt).replace(chr(10), "<span class=pb></span>")}</p>')
+            notes.append(f'<p class="note"{dn}>{lab}{inline(nt, "note").replace(chr(10), "<span class=pb></span>")}</p>')
         why = '<button class="why" aria-expanded="false">more</button>' if notes else ""
         notehtml = f'<aside class="notes">{"".join(notes)}</aside>' if notes else ""
-        rows.append(f'<li class="row"><div class="date">{html.escape(e["date"])}</div><div class="main">{main}{why}</div>{notehtml}</li>')
+        dt = e["date"]; mk = dt.startswith("!"); dt = dt.lstrip("!").strip()
+        dhtml = f'<span class="mark">{html.escape(dt)}</span>' if mk else html.escape(dt)
+        rows.append(f'<li class="row"><div class="date">{dhtml}</div><div class="main">{main}{why}</div>{notehtml}</li>')
     def lk(a, u):
         if u.startswith("reveal:"):
             v = html.escape(u[7:])
