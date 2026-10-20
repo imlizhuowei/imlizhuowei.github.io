@@ -1,0 +1,100 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zhuowei Li</title>
+<meta name="description" content="second-year cs student. currently: do self-improving agents really get better?">
+<link rel="preload" href="/assets/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:N;src:url(/assets/Newsreader.woff2) format("woff2");font-weight:300 700;font-display:swap}
+@font-face{font-family:N;font-style:italic;src:url(/assets/Newsreader-Italic.woff2) format("woff2");font-weight:300 700;font-display:swap}
+:root{--paper:#eef0ed;--ink:#1f2a37;--body:#2a3542;--quiet:#44566b;--faint:#6f7f91;--rule:#d3d7d1;--blue:#3d5b78;--mark:#e4e9ee}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);font:400 18px/1.62 N,Georgia,"Songti SC","Noto Serif SC",serif;
+  font-feature-settings:"onum" 1;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.lamp{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:88px 32px 72px}
+a{color:var(--blue);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(61,91,120,.35);transition:text-decoration-color .2s}
+a:hover{text-decoration-color:var(--blue)}
+mark.todo{background:var(--mark);color:var(--quiet);font-style:italic;padding:0 .25em;border-radius:2px}
+header{display:grid;grid-template-columns:112px 1fr 140px;gap:0 28px;align-items:start;margin-bottom:76px}
+header .txt{grid-column:2}
+h1{margin:0 0 .35rem;font-weight:500;font-size:2.35rem;line-height:1.1;color:var(--ink);letter-spacing:-.01em}
+h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;letter-spacing:.08em}
+.tagline{margin:0 0 .3rem;color:var(--quiet);font-size:1.08rem;max-width:34rem}
+.links{display:flex;gap:1.3rem;font-size:.95rem}
+.links a{color:var(--quiet);text-decoration-color:rgba(68,86,107,.3)}
+.reveal{font:inherit;color:var(--quiet);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(68,86,107,.3)}
+.avatar{grid-column:3;width:140px;height:140px;border-radius:50%;object-fit:cover;display:block;
+  box-shadow:0 0 0 1px rgba(31,42,55,.06),0 6px 22px -12px rgba(31,42,55,.35)}
+.tl{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:112px minmax(0,1fr) 250px;gap:0 28px;padding:20px 0 22px;border-top:1px solid var(--rule)}
+.row:last-child{border-bottom:1px solid var(--rule)}
+.date{font-size:.9rem;color:var(--faint);padding-top:.18rem;font-variant-numeric:oldstyle-nums;letter-spacing:.02em;white-space:nowrap}
+.main p{margin:0 0 .55rem}.main p:last-child{margin:0}
+.traits{margin:0 0 1.1rem;color:var(--faint);font-size:.95rem;font-style:italic;letter-spacing:.01em}
+.notes{align-self:start;margin-top:.2rem}
+.note{font-style:italic;font-size:.9rem;line-height:1.55;color:var(--faint);padding-left:16px;border-left:1px solid var(--rule);
+  transition:color .25s,border-color .25s;margin:0 0 .9rem}
+.note:last-child{margin-bottom:0}
+.pb{display:block;height:.5em}
+.note .lab{font-style:normal;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:.1rem}
+.row:hover .note{color:var(--quiet)}
+.note.hot{color:var(--ink);border-left-color:var(--blue)}
+.an{text-decoration:underline dotted;text-decoration-color:rgba(61,91,120,.55);text-underline-offset:4px;text-decoration-thickness:1px;cursor:default;transition:background .2s}
+.an.hot{background:rgba(61,91,120,.08);border-radius:2px}
+.why{display:none}
+footer{margin-top:56px;font-size:.85rem;color:var(--faint);padding-left:140px}
+@media (max-width:760px){
+  body{font-size:17px}
+  .wrap{padding:44px 16px 56px}
+  header{grid-template-columns:1fr;margin-bottom:44px}
+  header .txt{grid-column:1}
+  .avatar{grid-column:1;grid-row:1;width:96px;height:96px;margin-bottom:22px}
+  h1{font-size:2rem}
+  .row{grid-template-columns:1fr;padding:16px 0 18px}
+  .date{margin-bottom:.25rem;padding:0}
+  .notes{display:none;margin-top:.7rem}
+  .row.open .notes{display:block}.row.open .note{color:var(--quiet)}
+  .why{display:inline-block;margin-top:.45rem;font:italic .88rem N,serif;color:var(--faint);background:none;border:0;padding:0;cursor:pointer}
+  .why::after{content:" +"}.row.open .why::after{content:" –"}
+  footer{padding-left:0}
+}
+@media (hover:none),(prefers-reduced-motion:reduce){.lamp{display:none}}
+.art{max-width:660px;margin:0 auto}
+.back{font-size:.92rem;color:var(--quiet);text-decoration-color:rgba(68,86,107,.3)}
+.art h1{margin:2.4rem 0 .6rem;font-size:2.1rem;line-height:1.15}
+.art .meta{color:var(--faint);font-size:.92rem;margin:0 0 2.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--rule)}
+.art .meta a{color:var(--quiet)}
+.art h2{font-weight:500;font-size:1.3rem;color:var(--ink);margin:2.6rem 0 .8rem}
+.art p{margin:0 0 1.1rem}
+.art ul{margin:0 0 1.2rem;padding-left:1.2rem}.art li{margin:0 0 .45rem}
+.art strong{font-weight:600;color:var(--ink)}
+.art table{border-collapse:collapse;width:100%;margin:.4rem 0 1.4rem;font-size:.92rem;font-variant-numeric:lining-nums tabular-nums}
+.art th{text-align:left;font-weight:500;color:var(--quiet);border-bottom:1px solid var(--quiet);padding:.4rem .6rem .4rem 0}
+.art td{border-bottom:1px solid var(--rule);padding:.4rem .6rem .4rem 0}
+.art .tw{overflow-x:auto}
+</style></head><body>
+<div class="lamp" id="lamp"></div>
+<div class="wrap">
+<header><div class="txt"><h1>Zhuowei Li</h1>
+<p class="tagline">second-year cs student. currently: do self-improving agents really get better?</p><p class="traits">fast learner · curious · interest-driven</p><nav class="links"><a href="https://github.com/imlizhuowei">GitHub</a><a href="https://x.com/zhuowei_li_">X</a><button class="reveal" data-v="ZhuoWei20070806" title="click to show and copy">WeChat</button></nav></div>
+<img class="avatar" src="/assets/avatar.jpg" alt="Zhuowei Li" width="140" height="140"></header>
+<ol class="tl"><li class="row"><div class="date">Oct 13–20, 2026</div><div class="main"><p>After seeing Kimi’s No Genre event, I quickly chose a direction I find interesting, recursive self-improvement, and learned the field. Then I ran <span class="an" data-n="0">a study</span> on whether self-improving agents’ gains are real, and built <span class="an" data-n="1">an open-source toolkit</span> for checking them.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0"><span class="lab">a study</span>In a self-improvement loop on Kimi, an agent revised its own playbook to raise an LLM judge’s score. Judge scores rose while accuracy against the answer key fell by 12 points. The pattern held across three judges (Kimi K2.6, Kimi K3, DeepSeek) and two real-world tasks, business-data analysis and contract review, with predictions pre-registered.</p><p class="note" data-n="1"><span class="lab">toolkit</span>realgain takes any self-improvement loop’s evaluation log and separates each claimed gain into real improvement, luck, fitting the selection tasks, a fooled judge, or the agent reading the answer key. <a href="https://github.com/imlizhuowei/realgain">GitHub ↗</a></p></aside></li><li class="row"><div class="date">Jun–Sep 2026</div><div class="main"><p>Tried running a cross-border e-commerce business on the independent-store model. <span class="an" data-n="0">Started hiking.</span></p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0">My second trek was already one of the harder routes in western Sichuan :)</p></aside></li><li class="row"><div class="date">Mar–May 2026</div><div class="main"><p>First research project, as sole lead: <span class="an" data-n="0">a small closed loop</span> in which a diffusion model, a scorer and an RL agent tried to improve a medical-image classifier with generated data.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0">I learned more from what went wrong: the scorer’s rating rose 55% while the classifier didn’t improve, the RL had quietly become a grid search, and a “best” result over 3 runs vanished over 20. These became the questions behind my RSI project.<span class=pb></span><a href="/projects/medical-loop/">Details →</a> · <a href="https://github.com/imlizhuowei/medmnist-diffusion-rl-loop">GitHub ↗</a></p></aside></li><li class="row"><div class="date">Mar 2026</div><div class="main"><p>Went from a first neural network written by hand in NumPy to a diffusion model (DDPM) in <span class="an" data-n="0">ten days</span>.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0">When something genuinely interests me, I focus on it completely. <a href="https://github.com/imlizhuowei/mlp-to-ddpm">GitHub ↗</a></p></aside></li><li class="row"><div class="date">Nov 2025</div><div class="main"><p>Joined a lab and started learning deep learning <span class="an" data-n="0">on my own</span>.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0">The lab was new and tiny, with almost no guidance. Over the next month or two, I taught myself the foundations of machine learning and deep learning, up through the Transformer.<span class=pb></span>I was in a flow state every day, and for the first time, I truly enjoyed studying.<span class=pb></span>Over winter break, I learned the basics of reinforcement learning.</p></aside></li><li class="row"><div class="date">Sep 2025</div><div class="main"><p>Started computer science at Northeastern University (Qinhuangdao), with almost no coding background.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note">That summer, while trying to spend less time on screens, I stumbled into an early agent beta from Zhipu. That was my first real look at AI agents.</p></aside></li><li class="row"><div class="date">2022</div><div class="main"><p>Captained my high school’s <span class="an" data-n="0">AI maker club</span> to a provincial award. The same year, I was selected for China’s national <span class="an" data-n="1">Youth Talent Program</span> in physics.</p><button class="why" aria-expanded="false">more</button></div><aside class="notes"><p class="note" data-n="0"><span class="lab">club</span>I joined because I like trying new things.</p><p class="note" data-n="1"><span class="lab">physics</span>A national program: universities select promising high-school students, and professors train them in research for free. Mine was at USTC.<span class=pb></span>Since middle school, curiosity has drawn me to physics and philosophy, and I loved reading and thinking about both. In high school I also taught myself some university physics, just out of interest.<span class=pb></span>I left the program soon after joining, on a gut feeling that I’d end up in computer science.</p></aside></li></ol>
+<footer>© 2026 Zhuowei Li</footer>
+</div><script>
+const lamp=document.getElementById("lamp");
+if(matchMedia("(hover:hover)").matches&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
+  let raf=0;addEventListener("pointermove",e=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+    lamp.style.background=`radial-gradient(520px circle at ${e.clientX}px ${e.clientY}px, rgba(255,255,253,.8), rgba(255,255,253,0) 70%)`})});
+}
+document.querySelectorAll(".row").forEach(r=>{
+  const pair=n=>[...r.querySelectorAll(`[data-n="${n}"]`)];
+  r.querySelectorAll("[data-n]").forEach(el=>{
+    el.addEventListener("mouseenter",()=>pair(el.dataset.n).forEach(x=>x.classList.add("hot")));
+    el.addEventListener("mouseleave",()=>pair(el.dataset.n).forEach(x=>x.classList.remove("hot")));});
+});
+document.querySelectorAll(".reveal").forEach(b=>b.onclick=()=>{b.textContent="WeChat: "+b.dataset.v;try{navigator.clipboard.writeText(b.dataset.v);b.title="copied"}catch(e){}});
+document.querySelectorAll(".why").forEach(b=>b.onclick=()=>{const r=b.closest(".row");r.classList.toggle("open");b.setAttribute("aria-expanded",r.classList.contains("open"))});
+</script></body></html>

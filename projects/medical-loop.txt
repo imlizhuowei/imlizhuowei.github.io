@@ -1,0 +1,46 @@
+# A small self-improving loop for medical images
+meta: Mar–May 2026 · first research project, sole lead · MedMNIST (BreastMNIST, DermaMNIST, PneumoniaMNIST, BloodMNIST) · [GitHub ↗](https://github.com/imlizhuowei/medmnist-diffusion-rl-loop)
+
+Medical image datasets are imbalanced: the rare class is often the one that matters, and there are few examples of it. The idea was to let a system make its own training data for that class and learn which of it actually helps.
+
+## The loop
+
+- A **diffusion model (DDPM)** generates candidate images of the rare class (in BreastMNIST, trained on only 147 real images).
+- A **scorer** rates each generated image.
+- An **RL agent** decides which generated images go into the training set.
+- A **classifier** trains on the result, and its accuracy on the rare class is fed back to the agent as reward.
+
+## What happened, step by step
+
+**1. RL picks a confidence window.** The agent (a small policy network trained with REINFORCE) chose a range of scorer confidence; images inside it were added to training. Accuracy went up, but when I looked at the agent's state, six of its seven dimensions barely moved during training. The agent was effectively searching over a fixed problem: the RL had quietly become a grid search, and the loop was not really closed.
+
+**2. Feeding the selected images back into the generator made it worse.** I fine-tuned the diffusion model on the images the loop had selected, hoping each round would generate better ones. Instead the scorer's mean rating fell every round, from 0.125 to 0.067. With 147 real images, there was not enough real data to anchor a generator trained on its own output.
+
+**3. A higher score did not mean a better classifier.** Without touching the generator's weights, I used classifier guidance in the last sampling steps to push images toward the rare class. The scorer's mean rating rose 55% (0.125 → 0.193), and images rated above 0.5 went from 3 to 19. Downstream accuracy did not improve (70.6% → 69.0%). The scorer was rewarding shortcut features, and guidance amplified them.
+
+**4. Finding the real bottleneck.** A class-conditional diffusion model trained on all 7 DermaMNIST classes (7,000 images) still produced pink blobs with no recognisable lesions. At 28×28 pixels, resolution, not data, was the limit. I stopped trying to improve the generator and focused on the selection side.
+
+**5. Three runs were not enough.** A strategy that scored 74.6% over 3 runs looked like the winner. I re-ran every strategy 20 times with t-tests:
+
+| strategy (20 runs) | mean accuracy | vs. no augmentation |
+|---|---|---|
+| no augmentation | 58.7% | – |
+| confidence | 73.1% | p = 0.0016 |
+| representativeness | 71.3% | p = 0.0045 |
+| diversity | 75.1% | p = 0.0005 |
+| representativeness + diversity | 71.8% | p = 0.0033 |
+
+Every form of selection clearly beat no augmentation, but the strategies were not distinguishable from each other (p > 0.1). Two of the "different" signals, confidence and representativeness, were correlated at 0.876: more signals, nearly the same information.
+
+**6. Weighting instead of filtering.** Rather than a yes/no filter, each generated image gets a weight for how much it counts. Before putting RL on top, I tested fixed weightings against binary filtering (20 runs). Weighting by representativeness beat filtering, 75.6% vs. 68.3% (p = 0.044); the other weightings did not. So weighting can help, but which signal the weights come from matters most. Having an RL agent learn a weight for each of the 500 generated images was the next step; I did not finish it.
+
+## What I took from it
+
+- **A proxy going up is not the goal going up.** The scorer's rating can be optimised without helping the classifier.
+- **A best result over a few runs is often luck.** Conclusions need repeated runs and a significance test.
+- **An RL agent whose state does not change is not learning a policy.** Checking whether the loop is really closed comes before tuning it.
+- **Find the hard limit before polishing.** Some bottlenecks, like 28×28 resolution, no algorithm on top will fix.
+
+## Where it led
+
+The first two lessons became my next project. If a self-improving loop's gains can come from a pleased proxy or from luck, how much of what such loops report is real? [realgain](https://github.com/imlizhuowei/realgain) measures exactly that, on loops running on Kimi and on public logs from AFlow and DGM.

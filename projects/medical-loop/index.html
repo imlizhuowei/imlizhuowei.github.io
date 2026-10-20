@@ -1,0 +1,93 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>A small self-improving loop for medical images · Zhuowei Li</title>
+<link rel="preload" href="/assets/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:N;src:url(/assets/Newsreader.woff2) format("woff2");font-weight:300 700;font-display:swap}
+@font-face{font-family:N;font-style:italic;src:url(/assets/Newsreader-Italic.woff2) format("woff2");font-weight:300 700;font-display:swap}
+:root{--paper:#eef0ed;--ink:#1f2a37;--body:#2a3542;--quiet:#44566b;--faint:#6f7f91;--rule:#d3d7d1;--blue:#3d5b78;--mark:#e4e9ee}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--body);font:400 18px/1.62 N,Georgia,"Songti SC","Noto Serif SC",serif;
+  font-feature-settings:"onum" 1;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.lamp{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:88px 32px 72px}
+a{color:var(--blue);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(61,91,120,.35);transition:text-decoration-color .2s}
+a:hover{text-decoration-color:var(--blue)}
+mark.todo{background:var(--mark);color:var(--quiet);font-style:italic;padding:0 .25em;border-radius:2px}
+header{display:grid;grid-template-columns:112px 1fr 140px;gap:0 28px;align-items:start;margin-bottom:76px}
+header .txt{grid-column:2}
+h1{margin:0 0 .35rem;font-weight:500;font-size:2.35rem;line-height:1.1;color:var(--ink);letter-spacing:-.01em}
+h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;letter-spacing:.08em}
+.tagline{margin:0 0 .3rem;color:var(--quiet);font-size:1.08rem;max-width:34rem}
+.links{display:flex;gap:1.3rem;font-size:.95rem}
+.links a{color:var(--quiet);text-decoration-color:rgba(68,86,107,.3)}
+.reveal{font:inherit;color:var(--quiet);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(68,86,107,.3)}
+.avatar{grid-column:3;width:140px;height:140px;border-radius:50%;object-fit:cover;display:block;
+  box-shadow:0 0 0 1px rgba(31,42,55,.06),0 6px 22px -12px rgba(31,42,55,.35)}
+.tl{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:112px minmax(0,1fr) 250px;gap:0 28px;padding:20px 0 22px;border-top:1px solid var(--rule)}
+.row:last-child{border-bottom:1px solid var(--rule)}
+.date{font-size:.9rem;color:var(--faint);padding-top:.18rem;font-variant-numeric:oldstyle-nums;letter-spacing:.02em;white-space:nowrap}
+.main p{margin:0 0 .55rem}.main p:last-child{margin:0}
+.traits{margin:0 0 1.1rem;color:var(--faint);font-size:.95rem;font-style:italic;letter-spacing:.01em}
+.notes{align-self:start;margin-top:.2rem}
+.note{font-style:italic;font-size:.9rem;line-height:1.55;color:var(--faint);padding-left:16px;border-left:1px solid var(--rule);
+  transition:color .25s,border-color .25s;margin:0 0 .9rem}
+.note:last-child{margin-bottom:0}
+.pb{display:block;height:.5em}
+.note .lab{font-style:normal;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:.1rem}
+.row:hover .note{color:var(--quiet)}
+.note.hot{color:var(--ink);border-left-color:var(--blue)}
+.an{text-decoration:underline dotted;text-decoration-color:rgba(61,91,120,.55);text-underline-offset:4px;text-decoration-thickness:1px;cursor:default;transition:background .2s}
+.an.hot{background:rgba(61,91,120,.08);border-radius:2px}
+.why{display:none}
+footer{margin-top:56px;font-size:.85rem;color:var(--faint);padding-left:140px}
+@media (max-width:760px){
+  body{font-size:17px}
+  .wrap{padding:44px 16px 56px}
+  header{grid-template-columns:1fr;margin-bottom:44px}
+  header .txt{grid-column:1}
+  .avatar{grid-column:1;grid-row:1;width:96px;height:96px;margin-bottom:22px}
+  h1{font-size:2rem}
+  .row{grid-template-columns:1fr;padding:16px 0 18px}
+  .date{margin-bottom:.25rem;padding:0}
+  .notes{display:none;margin-top:.7rem}
+  .row.open .notes{display:block}.row.open .note{color:var(--quiet)}
+  .why{display:inline-block;margin-top:.45rem;font:italic .88rem N,serif;color:var(--faint);background:none;border:0;padding:0;cursor:pointer}
+  .why::after{content:" +"}.row.open .why::after{content:" –"}
+  footer{padding-left:0}
+}
+@media (hover:none),(prefers-reduced-motion:reduce){.lamp{display:none}}
+.art{max-width:660px;margin:0 auto}
+.back{font-size:.92rem;color:var(--quiet);text-decoration-color:rgba(68,86,107,.3)}
+.art h1{margin:2.4rem 0 .6rem;font-size:2.1rem;line-height:1.15}
+.art .meta{color:var(--faint);font-size:.92rem;margin:0 0 2.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--rule)}
+.art .meta a{color:var(--quiet)}
+.art h2{font-weight:500;font-size:1.3rem;color:var(--ink);margin:2.6rem 0 .8rem}
+.art p{margin:0 0 1.1rem}
+.art ul{margin:0 0 1.2rem;padding-left:1.2rem}.art li{margin:0 0 .45rem}
+.art strong{font-weight:600;color:var(--ink)}
+.art table{border-collapse:collapse;width:100%;margin:.4rem 0 1.4rem;font-size:.92rem;font-variant-numeric:lining-nums tabular-nums}
+.art th{text-align:left;font-weight:500;color:var(--quiet);border-bottom:1px solid var(--quiet);padding:.4rem .6rem .4rem 0}
+.art td{border-bottom:1px solid var(--rule);padding:.4rem .6rem .4rem 0}
+.art .tw{overflow-x:auto}
+</style></head><body><div class="lamp" id="lamp"></div>
+<div class="wrap"><article class="art"><a class="back" href="/">← Zhuowei Li</a>
+<h1>A small self-improving loop for medical images</h1><p class="meta">Mar–May 2026 · first research project, sole lead · MedMNIST (BreastMNIST, DermaMNIST, PneumoniaMNIST, BloodMNIST) · <a href="https://github.com/imlizhuowei/medmnist-diffusion-rl-loop">GitHub ↗</a></p><p>Medical image datasets are imbalanced: the rare class is often the one that matters, and there are few examples of it. The idea was to let a system make its own training data for that class and learn which of it actually helps.</p><h2>The loop</h2><ul><li>A <strong>diffusion model (DDPM)</strong> generates candidate images of the rare class (in BreastMNIST, trained on only 147 real images).</li><li>A <strong>scorer</strong> rates each generated image.</li><li>An <strong>RL agent</strong> decides which generated images go into the training set.</li><li>A <strong>classifier</strong> trains on the result, and its accuracy on the rare class is fed back to the agent as reward.</li></ul><h2>What happened, step by step</h2><p><strong>1. RL picks a confidence window.</strong> The agent (a small policy network trained with REINFORCE) chose a range of scorer confidence; images inside it were added to training. Accuracy went up, but when I looked at the agent's state, six of its seven dimensions barely moved during training. The agent was effectively searching over a fixed problem: the RL had quietly become a grid search, and the loop was not really closed.</p><p><strong>2. Feeding the selected images back into the generator made it worse.</strong> I fine-tuned the diffusion model on the images the loop had selected, hoping each round would generate better ones. Instead the scorer's mean rating fell every round, from 0.125 to 0.067. With 147 real images, there was not enough real data to anchor a generator trained on its own output.</p><p><strong>3. A higher score did not mean a better classifier.</strong> Without touching the generator's weights, I used classifier guidance in the last sampling steps to push images toward the rare class. The scorer's mean rating rose 55% (0.125 → 0.193), and images rated above 0.5 went from 3 to 19. Downstream accuracy did not improve (70.6% → 69.0%). The scorer was rewarding shortcut features, and guidance amplified them.</p><p><strong>4. Finding the real bottleneck.</strong> A class-conditional diffusion model trained on all 7 DermaMNIST classes (7,000 images) still produced pink blobs with no recognisable lesions. At 28×28 pixels, resolution, not data, was the limit. I stopped trying to improve the generator and focused on the selection side.</p><p><strong>5. Three runs were not enough.</strong> A strategy that scored 74.6% over 3 runs looked like the winner. I re-ran every strategy 20 times with t-tests:</p><div class="tw"><table><thead><tr><th>strategy (20 runs)</th><th>mean accuracy</th><th>vs. no augmentation</th></tr></thead><tbody><tr><td>no augmentation</td><td>58.7%</td><td>–</td></tr><tr><td>confidence</td><td>73.1%</td><td>p = 0.0016</td></tr><tr><td>representativeness</td><td>71.3%</td><td>p = 0.0045</td></tr><tr><td>diversity</td><td>75.1%</td><td>p = 0.0005</td></tr><tr><td>representativeness + diversity</td><td>71.8%</td><td>p = 0.0033</td></tr></tbody></table></div><p>Every form of selection clearly beat no augmentation, but the strategies were not distinguishable from each other (p &gt; 0.1). Two of the "different" signals, confidence and representativeness, were correlated at 0.876: more signals, nearly the same information.</p><p><strong>6. Weighting instead of filtering.</strong> Rather than a yes/no filter, each generated image gets a weight for how much it counts. Before putting RL on top, I tested fixed weightings against binary filtering (20 runs). Weighting by representativeness beat filtering, 75.6% vs. 68.3% (p = 0.044); the other weightings did not. So weighting can help, but which signal the weights come from matters most. Having an RL agent learn a weight for each of the 500 generated images was the next step; I did not finish it.</p><h2>What I took from it</h2><ul><li><strong>A proxy going up is not the goal going up.</strong> The scorer's rating can be optimised without helping the classifier.</li><li><strong>A best result over a few runs is often luck.</strong> Conclusions need repeated runs and a significance test.</li><li><strong>An RL agent whose state does not change is not learning a policy.</strong> Checking whether the loop is really closed comes before tuning it.</li><li><strong>Find the hard limit before polishing.</strong> Some bottlenecks, like 28×28 resolution, no algorithm on top will fix.</li></ul><h2>Where it led</h2><p>The first two lessons became my next project. If a self-improving loop's gains can come from a pleased proxy or from luck, how much of what such loops report is real? <a href="https://github.com/imlizhuowei/realgain">realgain</a> measures exactly that, on loops running on Kimi and on public logs from AFlow and DGM.</p></article>
+<footer style="padding-left:0;max-width:660px;margin:56px auto 0">© 2026 Zhuowei Li</footer></div><script>
+const lamp=document.getElementById("lamp");
+if(matchMedia("(hover:hover)").matches&&!matchMedia("(prefers-reduced-motion:reduce)").matches){
+  let raf=0;addEventListener("pointermove",e=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{
+    lamp.style.background=`radial-gradient(520px circle at ${e.clientX}px ${e.clientY}px, rgba(255,255,253,.8), rgba(255,255,253,0) 70%)`})});
+}
+document.querySelectorAll(".row").forEach(r=>{
+  const pair=n=>[...r.querySelectorAll(`[data-n="${n}"]`)];
+  r.querySelectorAll("[data-n]").forEach(el=>{
+    el.addEventListener("mouseenter",()=>pair(el.dataset.n).forEach(x=>x.classList.add("hot")));
+    el.addEventListener("mouseleave",()=>pair(el.dataset.n).forEach(x=>x.classList.remove("hot")));});
+});
+document.querySelectorAll(".reveal").forEach(b=>b.onclick=()=>{b.textContent="WeChat: "+b.dataset.v;try{navigator.clipboard.writeText(b.dataset.v);b.title="copied"}catch(e){}});
+document.querySelectorAll(".why").forEach(b=>b.onclick=()=>{const r=b.closest(".row");r.classList.toggle("open");b.setAttribute("aria-expanded",r.classList.contains("open"))});
+</script></body></html>

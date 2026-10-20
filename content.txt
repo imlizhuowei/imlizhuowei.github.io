@@ -1,0 +1,54 @@
+# Site text. Edit this file only; run `python3 build.py` to rebuild index.html.
+#
+# Timeline entries start with "== <date>".
+# Plain lines under an entry are the main text.
+# [[phrase]] marks a phrase that has a margin note.
+# Lines starting with ">" are margin notes, in the same order as the [[phrases]].
+#   "> label: text" shows a small label (use it when an entry has more than one note).
+#   A line starting with ">>" continues the note above on a new line.
+#   A note in an entry with no [[phrase]] belongs to the whole entry.
+# [text](url) makes a link. {text} is a placeholder that still needs filling in (shows highlighted).
+
+name: Zhuowei Li
+tagline: second-year cs student. currently: do self-improving agents really get better?
+traits: fast learner, curious, interest-driven
+
+links:
+GitHub | https://github.com/imlizhuowei
+X | https://x.com/zhuowei_li_
+WeChat | reveal:ZhuoWei20070806
+
+== Oct 13–20, 2026
+After seeing Kimi’s No Genre event, I quickly chose a direction I find interesting, recursive self-improvement, and learned the field. Then I ran [[a study]] on whether self-improving agents’ gains are real, and built [[an open-source toolkit]] for checking them.
+> a study: In a self-improvement loop on Kimi, an agent revised its own playbook to raise an LLM judge’s score. Judge scores rose while accuracy against the answer key fell by 12 points. The pattern held across three judges (Kimi K2.6, Kimi K3, DeepSeek) and two real-world tasks, business-data analysis and contract review, with predictions pre-registered.
+> toolkit: realgain takes any self-improvement loop’s evaluation log and separates each claimed gain into real improvement, luck, fitting the selection tasks, a fooled judge, or the agent reading the answer key. [GitHub ↗](https://github.com/imlizhuowei/realgain)
+
+== Jun–Sep 2026
+Tried running a cross-border e-commerce business on the independent-store model. [[Started hiking.]]
+> My second trek was already one of the harder routes in western Sichuan :)
+
+== Mar–May 2026
+First research project, as sole lead: [[a small closed loop]] in which a diffusion model, a scorer and an RL agent tried to improve a medical-image classifier with generated data.
+> I learned more from what went wrong: the scorer’s rating rose 55% while the classifier didn’t improve, the RL had quietly become a grid search, and a “best” result over 3 runs vanished over 20. These became the questions behind my RSI project.
+>> [Details →](/projects/medical-loop/) · [GitHub ↗](https://github.com/imlizhuowei/medmnist-diffusion-rl-loop)
+
+== Mar 2026
+Went from a first neural network written by hand in NumPy to a diffusion model (DDPM) in [[ten days]].
+> When something genuinely interests me, I focus on it completely. [GitHub ↗](https://github.com/imlizhuowei/mlp-to-ddpm)
+
+== Nov 2025
+Joined a lab and started learning deep learning [[on my own]].
+> The lab was new and tiny, with almost no guidance. Over the next month or two, I taught myself the foundations of machine learning and deep learning, up through the Transformer.
+>> I was in a flow state every day, and for the first time, I truly enjoyed studying.
+>> Over winter break, I learned the basics of reinforcement learning.
+
+== Sep 2025
+Started computer science at Northeastern University (Qinhuangdao), with almost no coding background.
+> That summer, while trying to spend less time on screens, I stumbled into an early agent beta from Zhipu. That was my first real look at AI agents.
+
+== 2022
+Captained my high school’s [[AI maker club]] to a provincial award. The same year, I was selected for China’s national [[Youth Talent Program]] in physics.
+> club: I joined because I like trying new things.
+> physics: A national program: universities select promising high-school students, and professors train them in research for free. Mine was at USTC.
+>> Since middle school, curiosity has drawn me to physics and philosophy, and I loved reading and thinking about both. In high school I also taught myself some university physics, just out of interest.
+>> I left the program soon after joining, on a gut feeling that I’d end up in computer science.
