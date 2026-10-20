@@ -75,7 +75,7 @@ h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;le
 .row:last-child{border-bottom:1px solid var(--rule)}
 .date{font-size:.9rem;color:var(--faint);padding-top:.18rem;font-variant-numeric:oldstyle-nums;letter-spacing:.02em;white-space:nowrap}
 .main p{margin:0 0 .55rem}.main p:last-child{margin:0}
-.traits{margin:0 0 1.1rem;color:var(--faint);font-size:.95rem;font-style:italic;letter-spacing:.01em}
+.traits{margin:1.4rem 0 1.1rem;color:var(--faint);font-size:.95rem;font-style:italic;letter-spacing:.01em}
 .notes{align-self:start;margin-top:.2rem}
 .note{font-style:italic;font-size:.9rem;line-height:1.55;color:var(--faint);padding-left:16px;border-left:1px solid var(--rule);
   transition:color .25s,border-color .25s;margin:0 0 .9rem}
@@ -90,8 +90,9 @@ h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;le
 .hl{color:var(--ink);font-weight:560}
 .hl .an{text-decoration:none}
 .em{color:var(--ink);font-weight:500}
-.mark{color:var(--ink);font-weight:500;padding:.08em .4em;margin-left:-.4em;border-radius:3px;background:rgba(61,91,120,.13)}
-.go{margin-top:.7rem!important}
+.mark{color:var(--ink);font-weight:500;padding:.05em .35em;margin-left:-.35em;border-radius:3px 6px 4px 7px;background:linear-gradient(100deg,rgba(247,226,128,0) 0%,rgba(247,226,128,.78) 3%,rgba(247,226,128,.6) 50%,rgba(247,226,128,.75) 96%,rgba(247,226,128,0) 100%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.go{margin-top:1.9rem!important}
+.gonote{margin-top:1rem!important}
 .go a{font-weight:500;color:var(--blue);text-decoration-color:rgba(61,91,120,.5)}
 .gonote{font-size:1rem;font-style:normal;padding-left:17px;margin:.7rem 0 0}
 .art figure{margin:1.4rem 0 1.8rem}.art figure img{width:100%;height:auto;border:1px solid var(--rule);background:#fff}
@@ -117,7 +118,9 @@ footer{margin-top:56px;font-size:.85rem;color:var(--faint);padding-left:140px}
 .art{max-width:660px;margin:0 auto}
 .back{font-size:.92rem;color:var(--quiet);text-decoration-color:rgba(68,86,107,.3)}
 .art h1{margin:2.4rem 0 .6rem;font-size:2.1rem;line-height:1.15}
-.art .meta{color:var(--faint);font-size:.92rem;margin:0 0 2.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--rule)}
+.art .metablock{margin:0 0 2.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--rule)}
+.art .meta{color:var(--faint);font-size:.92rem;margin:0}
+.art .ghline{margin:.8rem 0 0!important;font-size:1.02rem}
 .art .meta a{color:var(--quiet)}
 .art h2{font-weight:500;font-size:1.3rem;color:var(--ink);margin:2.6rem 0 .8rem}
 .art p{margin:0 0 1.1rem}
@@ -179,13 +182,13 @@ def build():
     page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(meta.get('name',''))}</title>
-<meta name="description" content="{html.escape(meta.get('tagline',''))}">
+<meta name="description" content="{html.escape(meta.get('tagline','').replace(chr(92)+'n',' '))}">
 <link rel="preload" href="/assets/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
 <style>{CSS}</style></head><body>
 <div class="lamp" id="lamp"></div>
 <div class="wrap">
 <header><div class="txt"><h1>{html.escape(meta.get('name',''))}</h1>
-<p class="tagline">{inline(meta.get('tagline',''))}</p>{('<p class="traits">' + ' · '.join(html.escape(x.strip()) for x in meta['traits'].split(',')) + '</p>') if meta.get('traits') else ''}<nav class="links">{linkhtml}</nav></div>
+<p class="tagline">{inline(meta.get('tagline','')).replace(chr(92)+'n','<br>')}</p>{('<p class="traits">' + ' · '.join(html.escape(x.strip()) for x in meta['traits'].split(',')) + '</p>') if meta.get('traits') else ''}<nav class="links">{linkhtml}</nav></div>
 <img class="avatar" src="/assets/avatar.jpg" alt="{html.escape(meta.get('name',''))}" width="140" height="140"></header>
 <ol class="tl">{''.join(rows)}</ol>
 <footer>© 2026 {html.escape(meta.get('name',''))}</footer>
@@ -222,13 +225,16 @@ def build_projects():
         lines = open(os.path.join(pdir, f), encoding="utf-8").read().splitlines()
         title = lines[0].lstrip("# ").strip()
         meta = lines[1].partition(":")[2].strip() if lines[1].startswith("meta:") else ""
+        gh = ""
+        m2 = re.search(r"\s*·\s*(\[GitHub ↗\]\(.+?\))\s*$", meta)
+        if m2: gh = f'<p class="go ghline">{inline(m2.group(1))}</p>'; meta = meta[:m2.start()]
         body = md("\n".join(lines[2:]))
         page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} · Zhuowei Li</title>
 <link rel="preload" href="/assets/Newsreader.woff2" as="font" type="font/woff2" crossorigin>
 <style>{CSS}</style></head><body><div class="lamp" id="lamp"></div>
 <div class="wrap"><article class="art"><a class="back" href="/">← Zhuowei Li</a>
-<h1>{inline(title)}</h1><p class="meta">{inline(meta)}</p>{body}</article>
+<h1>{inline(title)}</h1><div class="metablock"><p class="meta">{inline(meta)}</p>{gh}</div>{body}</article>
 <footer style="padding-left:0;max-width:660px;margin:56px auto 0">© 2026 Zhuowei Li</footer></div><script>{JS}</script></body></html>"""
         d = os.path.join(pdir, f[:-4]); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(page)

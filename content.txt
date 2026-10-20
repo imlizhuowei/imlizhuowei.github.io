@@ -12,7 +12,7 @@
 # [text](url) makes a link. {text} is a placeholder that still needs filling in (shows highlighted).
 
 name: Zhuowei Li
-tagline: second-year cs student. currently: do self-improving agents really get better?
+tagline: second-year cs student.\ncurrently: do self-improving agents really get better?
 traits: fast learner, curious, interest-driven
 
 links:
@@ -24,8 +24,8 @@ WeChat | reveal:ZhuoWei20070806
 After seeing Kimi’s No Genre event, I quickly chose a direction I find interesting, recursive self-improvement, and learned the field.
 ==On real-world knowledge work with no verifiable reward, I [[measured]] how much of a self-improving agent’s claimed progress is real, and built [[an open-source audit]] for it.==
 -> [Details →](/projects/realgain/)
-> study: Real enterprise tasks, not coding puzzles: business-data memos and SEC contract review, against a hidden answer key. When an LLM judge drove the loop, judges from two model families rewarded the final version while accuracy fell 12.4 points. With the answer key driving it, most claimed gain was selection noise; with the key within reach, the agent read it unprompted.
-> toolkit: realgain attributes every accepted gain to real improvement, selection noise, overfitting, proxy exploitation or grader access. On AFlow’s public logs, only 8 of 27 accepted changes exceed task noise.
+> study: Three controlled self-improvement loops on enterprise analysis and legal review, scored against a hidden ground truth. Judge-driven progress was illusory: judges from two model families rewarded the final version while accuracy fell 12.4 points. Truth-driven progress was mostly selection noise. A reachable grader was exploited, unprompted.
+> toolkit: realgain decomposes every claimed gain into real improvement, selection noise, overfitting, proxy exploitation and grader access, from a loop’s own logs. On AFlow’s published runs, 8 of 27 accepted changes exceed noise.
 > -> [GitHub ↗](https://github.com/imlizhuowei/realgain)
 
 == Jun–Sep 2026
@@ -35,8 +35,8 @@ Tried running a cross-border e-commerce business on the independent-store model.
 My first research project, as a freshman and sole lead:
 ==[[a small closed loop]] in which a diffusion model, a scorer and an RL agent tried to improve a medical-image classifier with generated data.==
 -> [Details →](/projects/medical-loop/)
-> I learned more from what went wrong: the scorer’s rating rose 55% while the classifier didn’t improve, the RL had quietly become a grid search, and a “best” result over 3 runs vanished over 20.
->> ==These became the questions behind my RSI project.==
+> A miniature of recursive self-improvement: a system generating, judging and training on its own data. It surfaced three failure modes that matter at scale: a proxy that rose while the goal stood still (scorer +55%, classifier flat), collapse when trained on its own output, and a loop that only looked closed.
+>> These became the questions behind my RSI project.
 > -> [GitHub ↗](https://github.com/imlizhuowei/medmnist-diffusion-rl-loop)
 
 == Mar 2026
