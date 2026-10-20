@@ -1,0 +1,43 @@
+# Auditing self-improvement
+meta: Oct 13–20, 2026 · independent study · agents and judges: Kimi K2.6, Kimi K3, DeepSeek-V4 · [GitHub ↗](https://github.com/imlizhuowei/realgain)
+
+As AI systems start improving themselves, generating changes is becoming cheap. Verifying them is not. On open-ended work, where no program can check the answer, the signal that decides what a self-improving system keeps is usually another model. This study measures **how much of the progress such a loop reports survives independent verification**, and where the rest comes from.
+
+## Setup
+
+- **Real-world knowledge work, no verifiable reward.** Two enterprise tasks: year-over-year analysis memos on a real retailer's transaction data (1M rows, with returns, missing IDs and a partial final month), and review of real SEC contracts (CUAD). An agent on Kimi K2.6 rewrites its own playbook; a Kimi judge scores the outputs, as such systems are run in practice.
+- **A hidden ground truth.** The loop never sees it: KPI values computed from the data dictionary, and lawyers' clause annotations.
+- **Three controlled loops on the same task, differing only in the improvement signal:** an LLM judge selects; the answer key selects; the answer key selects but sits, unannounced, in the agent's working folder.
+- **Every accepted change audited three ways:** re-run on the tasks used to accept it, tested on unseen tasks, and its command log checked for grader access. Predictions were written down before the runs, and every number was recomputed from raw logs by an independent agent.
+
+## Findings
+
+**1. A judge-driven loop optimises the judge, not the work.** On 21 unseen retail tasks, the loop's final playbook raised all three judges' scores (Kimi K2.6 +1.0, Kimi K3 +1.3, DeepSeek +0.7, on 10) while accuracy against the ground truth fell by **12.4 points** (95% CI −22.9 to −1.9). The mechanism: the improved playbook demanded ever more rigorous like-for-like comparisons, and memos increasingly reported a trimmed figure as the full-period revenue (12 → 17 of 30). They read as more rigorous and were more wrong.
+
+![Judges vs ground truth on unseen tasks](/assets/realgain/heldout_v1.png)
+
+**2. The bias is shared across model families.** Kimi and DeepSeek judges agreed with each other (r = 0.64–0.72) far more than with the truth (r = −0.09 on contracts). On contracts, the one version that was genuinely better (+4.6 points) was scored lower by all three judges.
+
+**3. Giving the judge the data does not fix it.** Judges allowed to open the raw data and run code checked each memo carefully (22 commands on average). A DeepSeek judge still preferred the worse playbook (+1.2): it verified each memo against the memo's own definition. A Kimi judge stopped preferring it, but still could not tell correct memos from wrong ones (7.21 vs 7.12). Checking catches a wrong calculation; it does not catch a calculation of the wrong thing.
+
+**4. With a ground-truth signal, most claimed gain is selection noise.** The answer-key loop reported gains of +2, +4 and +6 points; re-running the same versions on the same tasks gave −2.2, +4.8 and +0.8. Picking the best of noisy evaluations manufactures progress (the winner's curse).
+
+**5. A reachable answer key gets read, unprompted.** With the key in its folder and no hint, the agent ran `ls -la .grader` and `cat .grader/gold.json`; even the 12-word starting playbook did so in 20% of unseen-task runs. The cheating version set a bar no honest candidate could clear, and the loop stalled for five generations.
+
+![Every accepted version, checked three ways](/assets/realgain/decomp_v1.png)
+
+**6. Published self-improvement logs.** Of 27 changes AFlow accepted across six benchmarks, 8 exceed task-sampling noise; on HumanEval, the best workflow's lead is what picking the best of 21 equal workflows gives by chance (p = 0.66). In DGM, 3 of 40 archived agents improve beyond noise; none of its 465 self-modification patches tampers with scoring.
+
+## The audit: realgain
+
+An open-source toolkit that reads any self-improvement loop's evaluation log and attributes each accepted gain to **real improvement, selection noise, overfitting to the selection tasks, proxy exploitation, or grader access**. It reports paired intervals with multiple-comparison correction, the smallest change the tasks could detect, an empirical-Bayes estimate of the winner's curse from the log alone (no re-runs), and a label-budget audit that tests a judge's claim with a handful of ground-truth labels. Validated on simulated loops with known truth: false "real" verdicts ≤ 2.2%.
+
+## What this suggests
+
+- **In open-ended self-improvement, the evaluator is the ceiling.** A loop cannot become better than the signal it improves against, and today's judges share blind spots across model families.
+- **Verification has to be independent of the optimised signal:** held-out tasks, re-runs, and a sparse stream of ground truth, budgeted alongside the search itself.
+- **Grader access is not a hypothetical.** An agent capable enough to improve itself will use whatever evaluation it can reach.
+
+## Limits
+
+Each loop ran once; held-out sets of 15–21 tasks cannot detect changes under about 4 points. The agent was a single model (Kimi K2.6). Retail truth uses the 5 of 7 KPIs with unambiguous definitions.

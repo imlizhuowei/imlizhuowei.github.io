@@ -7,6 +7,8 @@
 #   "> label: text" shows a small label (use it when an entry has more than one note).
 #   A line starting with ">>" continues the note above on a new line.
 #   A note in an entry with no [[phrase]] belongs to the whole entry.
+# ==text== emphasises. A main line "-> [link](url)" is a prominent link; a note line "> -> [link](url)" puts a link under the notes.
+# "== !date" highlights the date.
 # [text](url) makes a link. {text} is a placeholder that still needs filling in (shows highlighted).
 
 name: Zhuowei Li
@@ -20,10 +22,11 @@ WeChat | reveal:ZhuoWei20070806
 
 == !Oct 13–20, 2026
 After seeing Kimi’s No Genre event, I quickly chose a direction I find interesting, recursive self-improvement, and learned the field.
-==Then I ran [[a study]] on whether self-improving agents’ gains are real, and built [[an open-source toolkit]] for checking them.==
--> [The study and toolkit →](https://github.com/imlizhuowei/realgain)
-> a study: In a self-improvement loop on Kimi, an agent revised its own playbook to raise an LLM judge’s score. Judge scores rose while accuracy against the answer key fell by 12 points. The pattern held across three judges (Kimi K2.6, Kimi K3, DeepSeek) and two real-world tasks, business-data analysis and contract review, with predictions pre-registered.
-> toolkit: realgain takes any self-improvement loop’s evaluation log and separates each claimed gain into real improvement, luck, fitting the selection tasks, a fooled judge, or the agent reading the answer key.
+==On real-world knowledge work with no verifiable reward, I [[measured]] how much of a self-improving agent’s claimed progress is real, and built [[an open-source audit]] for it.==
+-> [Details →](/projects/realgain/)
+> study: Real enterprise tasks, not coding puzzles: business-data memos and SEC contract review, against a hidden answer key. When an LLM judge drove the loop, judges from two model families rewarded the final version while accuracy fell 12.4 points. With the answer key driving it, most claimed gain was selection noise; with the key within reach, the agent read it unprompted.
+> toolkit: realgain attributes every accepted gain to real improvement, selection noise, overfitting, proxy exploitation or grader access. On AFlow’s public logs, only 8 of 27 accepted changes exceed task noise.
+> -> [GitHub ↗](https://github.com/imlizhuowei/realgain)
 
 == Jun–Sep 2026
 Tried running a cross-border e-commerce business on the independent-store model.
@@ -31,12 +34,15 @@ Tried running a cross-border e-commerce business on the independent-store model.
 == !Mar–May 2026
 My first research project, as a freshman and sole lead:
 ==[[a small closed loop]] in which a diffusion model, a scorer and an RL agent tried to improve a medical-image classifier with generated data.==
--> [Details →](/projects/medical-loop/) · [GitHub ↗](https://github.com/imlizhuowei/medmnist-diffusion-rl-loop)
-> I learned more from what went wrong: the scorer’s rating rose 55% while the classifier didn’t improve, the RL had quietly become a grid search, and a “best” result over 3 runs vanished over 20. These became the questions behind my RSI project.
+-> [Details →](/projects/medical-loop/)
+> I learned more from what went wrong: the scorer’s rating rose 55% while the classifier didn’t improve, the RL had quietly become a grid search, and a “best” result over 3 runs vanished over 20.
+>> ==These became the questions behind my RSI project.==
+> -> [GitHub ↗](https://github.com/imlizhuowei/medmnist-diffusion-rl-loop)
 
 == Mar 2026
 Went from a first neural network written by hand in NumPy to a diffusion model (DDPM) in [[ten days]].
-> When something genuinely interests me, I focus on it completely. [GitHub ↗](https://github.com/imlizhuowei/mlp-to-ddpm)
+> When something genuinely interests me, I focus on it completely.
+> -> [GitHub ↗](https://github.com/imlizhuowei/mlp-to-ddpm)
 
 == Nov 2025
 Joined a lab and started learning deep learning [[on my own]].

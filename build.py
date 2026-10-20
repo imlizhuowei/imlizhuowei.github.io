@@ -8,6 +8,7 @@ def inline(s, where="main"):
     s = html.escape(s, quote=False)
     s = re.sub(r"==(.+?)==", (r'<span class="hl">\1</span>' if where == "main" else r'<span class="em">\1</span>'), s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"`(.+?)`", r"<code>\1</code>", s)
     s = re.sub(r"\[(.+?)\]\((.+?)\)", r'<a href="\2">\1</a>', s)
     s = re.sub(r"\{(.+?)\}", r'<mark class="todo">\1</mark>', s)
     return s
@@ -29,7 +30,9 @@ def parse(path):
         if line.startswith("== "):
             entries.append({"date": line[3:].strip(), "main": [], "note": []}); mode = "entry"; continue
         if mode == "entry":
-            if line.startswith(">>"):
+            if line.startswith("> -> "):
+                entries[-1].setdefault("nlinks", []).append(line[5:].strip())
+            elif line.startswith(">>"):
                 entries[-1]["note"][-1] += "\n" + line[2:].strip()
             else:
                 (entries[-1]["note"] if line.startswith(">") else entries[-1]["main"]).append(line.lstrip("> ").strip())
@@ -84,15 +87,16 @@ h1 .cn{font-size:1.05rem;font-weight:400;color:var(--faint);margin-left:.6rem;le
 .an{text-decoration:underline dotted;text-decoration-color:rgba(61,91,120,.55);text-underline-offset:4px;text-decoration-thickness:1px;cursor:default;transition:background .2s}
 .an.hot{background:rgba(61,91,120,.08);border-radius:2px}
 .why{display:none}
-.hl{color:var(--ink);font-weight:500;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-bottom:3px;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'><path d='M0 3.6 C 14 2.2, 26 4.6, 40 3.2 S 66 2.0, 80 3.6 S 106 4.4, 120 2.8' fill='none' stroke='%233d5b78' stroke-opacity='.55' stroke-width='1.6' stroke-linecap='round'/></svg>") repeat-x left bottom/120px 6px}
+.hl{color:var(--ink);font-weight:560}
 .hl .an{text-decoration:none}
 .em{color:var(--ink);font-weight:500}
-.mark{color:var(--ink);font-weight:500;padding:.05em .35em;margin-left:-.35em;border-radius:3px 6px 4px 7px;
-  background:linear-gradient(100deg,rgba(247,226,128,0) 0%,rgba(247,226,128,.78) 3%,rgba(247,226,128,.6) 50%,rgba(247,226,128,.75) 96%,rgba(247,226,128,0) 100%);
-  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+.mark{color:var(--ink);font-weight:500;padding:.08em .4em;margin-left:-.4em;border-radius:3px;background:rgba(61,91,120,.13)}
 .go{margin-top:.7rem!important}
 .go a{font-weight:500;color:var(--blue);text-decoration-color:rgba(61,91,120,.5)}
+.gonote{font-size:1rem;font-style:normal;padding-left:17px;margin:.7rem 0 0}
+.art figure{margin:1.4rem 0 1.8rem}.art figure img{width:100%;height:auto;border:1px solid var(--rule);background:#fff}
+.art figcaption{font-size:.85rem;color:var(--faint);margin-top:.4rem;font-style:italic}
+.art code{font:.86em ui-monospace,Menlo,Consolas,monospace;background:rgba(61,91,120,.08);padding:.05em .3em;border-radius:3px}
 footer{margin-top:56px;font-size:.85rem;color:var(--faint);padding-left:140px}
 @media (max-width:760px){
   body{font-size:17px}
@@ -159,6 +163,8 @@ def build():
                 l, _, nt = nt.partition(": "); lab = f'<span class="lab">{html.escape(l)}</span>'
             dn = f' data-n="{i}"' if i < k else ""
             notes.append(f'<p class="note"{dn}>{lab}{inline(nt, "note").replace(chr(10), "<span class=pb></span>")}</p>')
+        for l in e.get("nlinks", []):
+            notes.append(f'<p class="go gonote">{inline(l)}</p>')
         why = '<button class="why" aria-expanded="false">more</button>' if notes else ""
         notehtml = f'<aside class="notes">{"".join(notes)}</aside>' if notes else ""
         dt = e["date"]; mk = dt.startswith("!"); dt = dt.lstrip("!").strip()
@@ -202,6 +208,8 @@ def md(text):
         if not line.strip(): flush(); continue
         if line.startswith("## "): flush(); out.append(f"<h2>{inline(line[3:])}</h2>"); continue
         if line.startswith("- "): lst.append(line[2:]); continue
+        m = re.match(r"!\[(.*?)\]\((.+?)\)", line)
+        if m: flush(); out.append(f'<figure><img src="{m.group(2)}" alt="{html.escape(m.group(1))}" loading="lazy"><figcaption>{html.escape(m.group(1))}</figcaption></figure>'); continue
         if line.startswith("|"): tbl.append(line); continue
         para.append(line.strip())
     flush(); return "".join(out)
