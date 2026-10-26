@@ -20,8 +20,8 @@ GitHub | https://github.com/imlizhuowei
 X | https://x.com/zhuowei_li_
 WeChat | reveal:ZhuoWei20070806
 
-== !Oct 13–20, 2026
-After seeing Kimi’s No Genre event, I quickly chose a direction I find interesting, recursive self-improvement, and learned the field.
+== !Oct 2026
+Chose a direction I find most interesting, recursive self-improvement, and learned the field.
 ==On real-world knowledge work with no verifiable reward, I [[measured]] how much of a self-improving agent’s claimed progress is real, and built [[an open-source audit]] for it.==
 -> [Details →](/projects/realgain/)
 > study: Three controlled self-improvement loops on enterprise analysis and legal review, scored against a hidden ground truth. Judge-driven progress was illusory: judges from two model families rewarded the final version while accuracy fell 12.4 points. Truth-driven progress was mostly selection noise. A reachable grader was exploited, unprompted.

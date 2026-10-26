@@ -1,5 +1,5 @@
 # Auditing self-improvement
-meta: Oct 13–20, 2026 · independent study · agents and judges: Kimi K2.6, Kimi K3, DeepSeek-V4 · [GitHub ↗](https://github.com/imlizhuowei/realgain)
+meta: Oct 2026 · independent study · agents and judges: Kimi K2.6, Kimi K3, DeepSeek-V4 · [GitHub ↗](https://github.com/imlizhuowei/realgain)
 
 As AI systems start improving themselves, generating changes is becoming cheap. Verifying them is not. On open-ended work, where no program can check the answer, the signal that decides what a self-improving system keeps is usually another model. This study measures **how much of the progress such a loop reports survives independent verification**, and where the rest comes from.
 
